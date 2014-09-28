@@ -15,7 +15,7 @@ public class ChannelEditor {
 	private final String NAME = "name";
 	private final String VALUE = "value";
 	
-	private String mChannelName = "UMENG_CHANNEL";
+	private String mChannelName = "{CHANNEL}";
 	private String mChannelValue = "placeholder";
 	
 	private int namespace;
@@ -60,18 +60,19 @@ public class ChannelEditor {
 		
 		BTagNode umeng_meta = null;
 		
-		end:for(BXMLNode node : children){
+		for(BXMLNode node : children){
 			BTagNode m = (BTagNode)node;
 			//it's a risk that the value for "android:name" maybe not String
-			if((meta_data == m.getName()) && (m.getAttrStringForKey(attr_name) == channel_name)){
+			if((meta_data == m.getName()) && (m.getAttrStringForKey(attr_value) == channel_name)){
 					umeng_meta = m;
-					break end;
+					
+					if(umeng_meta != null){
+						umeng_meta.setAttrStringForKey(attr_value, channel_value);
+					}
 			}
 		}
 		
-		if(umeng_meta != null){
-			umeng_meta.setAttrStringForKey(attr_value, channel_value);
-		}else{
+		if (umeng_meta == null) {
 			Attribute name_attr = new Attribute(namespace, attr_name, TypedValue.TYPE_STRING);
 			name_attr.setString( channel_name );
 			Attribute value_attr = new Attribute(namespace, attr_value, TypedValue.TYPE_STRING);
